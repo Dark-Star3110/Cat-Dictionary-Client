@@ -1,7 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
-}
+    reactStrictMode: true,
+    swcMinify: true,
+    images: {
+        domains: ["cdn2.thecatapi.com", "www.kindpng.com"],
+    },
+    compiler: {
+        styledComponents: true,
+    },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
