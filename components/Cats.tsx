@@ -11,35 +11,17 @@ const StyledCats = styled.div`
     flex-wrap: wrap;
 `;
 
-const Cats = () => {
-    const catApi = "http://localhost:8000";
+interface CatsProps {
+    cats: any[];
+}
 
-    const [loading, setLoading] = useState(true);
-    const [data, setData] = useState([]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const res = await axios.get(catApi + "/cats", {
-                    withCredentials: true,
-                });
-                const cats = res.data;
-                setData(cats);
-            } catch (error) {
-                console.error(error);
-            }
-            setLoading(false);
-        };
-
-        fetchData();
-    }, []);
+const Cats = ({ cats }: CatsProps) => {
     return (
         <Container>
-            {loading && <div>Loading</div>}
-            {!loading && (
+            {!cats && <div>Loading</div>}
+            {cats && (
                 <StyledCats>
-                    {data.map((cat: Cat) => (
+                    {cats.map((cat: Cat) => (
                         <CatItem key={cat.id} cat={cat} />
                     ))}
                 </StyledCats>

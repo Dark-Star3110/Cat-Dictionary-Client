@@ -14,11 +14,12 @@ import PetsIcon from "@mui/icons-material/Pets";
 import { styled, alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
-import { useContext } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 import Button from "@mui/material/Button";
 import Link from "next/link";
 import { UserContext } from "../contexts/UserContext";
 import { deleteCookie } from "cookies-next";
+import axios from "axios";
 
 const Search = styled("div")(({ theme }) => ({
     position: "relative",
@@ -77,7 +78,13 @@ const settings = [
     },
 ];
 
-const NavBar = () => {
+interface INavBarProps {
+    setCats: Dispatch<SetStateAction<never[]>>;
+}
+
+const NavBar = ({ setCats }: INavBarProps) => {
+    const catApi = "http://localhost:8000";
+
     const { user, getUser } = useContext(UserContext);
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -100,6 +107,23 @@ const NavBar = () => {
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
+    };
+
+    const fetchData = async (key: string) => {
+        try {
+            const res = await axios.post(catApi + "/cats/find", {
+                name: key,
+            });
+            if (res.data) {
+                setCats(res.data);
+            } else {
+                setCats([]);
+            }
+            // console.log(user);
+        } catch (error) {
+            console.error(error);
+            setCats([]);
+        }
     };
 
     const logout = () => {
@@ -138,6 +162,9 @@ const NavBar = () => {
                         <StyledInputBase
                             placeholder="Search…"
                             inputProps={{ "aria-label": "search" }}
+                            onChange={(e) => {
+                                fetchData(e.target.value);
+                            }}
                         />
                     </Search>
 
